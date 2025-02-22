@@ -4,6 +4,7 @@ import id.my.agungdh.linechat.dto.UserDTO;
 import id.my.agungdh.linechat.model.User;
 import id.my.agungdh.linechat.repository.UserRepository;
 import id.my.agungdh.linechat.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDTO create(@RequestBody UserDTO user) {
+    public UserDTO create(@Valid @RequestBody UserDTO user) {
         return userService.create(user);
     }
 }

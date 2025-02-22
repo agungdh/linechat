@@ -8,7 +8,7 @@ jobs:
       - uses: graalvm/setup-graalvm@v1
         with:
           java-version: '21'      # See 'Options' for more details
-          distribution: 'graalvm' # See 'Supported distributions' for available options
+          distribution: 'liberica' # See 'Supported distributions' for available options
       - name: Example step
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"

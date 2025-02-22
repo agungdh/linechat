@@ -13,7 +13,6 @@ public record UserDTO(
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         String password,
         @NotNull
-        @Size(max = 3)
         String name
 ) {
 }

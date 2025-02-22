@@ -6,6 +6,7 @@ import id.my.agungdh.linechat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,8 +14,15 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        List<User> userList = userRepository.findAll();
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : userList) {
+            userDTOList.add(new UserDTO(user.getId(), user.getUsername(), user.getPassword(), user.getName()));
+        }
+
+        return userDTOList;
     }
 
     public UserDTO create(UserDTO userRequest) {

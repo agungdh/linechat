@@ -1,8 +1,6 @@
 package id.my.agungdh.linechat.controller;
 
 import id.my.agungdh.linechat.dto.UserDTO;
-import id.my.agungdh.linechat.model.User;
-import id.my.agungdh.linechat.repository.UserRepository;
 import id.my.agungdh.linechat.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -3,8 +3,6 @@ package id.my.agungdh.linechat.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import id.my.agungdh.linechat.validation.PasswordMatches;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @PasswordMatches
 public record UserDTO(

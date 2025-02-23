@@ -22,12 +22,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody UserDTO user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            // Collect error messages and return a bad request response
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
-
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.create(user));
     }
 
@@ -37,12 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            // Collect error messages and return a bad request response
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
-
+    public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.update(id, user));
     }
 

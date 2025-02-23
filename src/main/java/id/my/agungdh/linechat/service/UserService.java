@@ -36,7 +36,25 @@ public class UserService {
         return userMapper.toUserDTO(userEntity);
     }
 
+
     public UserDTO findById(Long id) {
         return userMapper.toUserDTO(userRepository.findById(id).orElse(null));
+    }
+
+    public UserDTO update(Long id, UserDTO userRequest) {
+        User userCheck = userRepository.findById(id).orElse(null);
+
+        if (userCheck == null) {
+            return null;
+        }
+
+        User userEntity = userMapper.toUser(userRequest);
+
+        userEntity.setId(userCheck.getId());
+        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+
+        userRepository.save(userEntity);
+
+        return userMapper.toUserDTO(userEntity);
     }
 }

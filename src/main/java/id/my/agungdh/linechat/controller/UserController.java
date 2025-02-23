@@ -33,6 +33,26 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+        UserDTO userDTO = userService.findById(id);
+        if (userDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // Collect error messages and return a bad request response
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+        }
+
+        UserDTO userDTO = userService.update(id, user);
+        if (userDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(userDTO);
     }
 }

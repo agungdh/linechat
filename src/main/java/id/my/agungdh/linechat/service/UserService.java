@@ -4,11 +4,13 @@ import id.my.agungdh.linechat.dto.UserDTO;
 import id.my.agungdh.linechat.mapper.UserMapper;
 import id.my.agungdh.linechat.model.User;
 import id.my.agungdh.linechat.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,15 +60,12 @@ public class UserService {
         return userMapper.toUserDTO(userEntity);
     }
 
-    public UserDTO delete(Long id) {
-        User userCheck = userRepository.findById(id).orElse(null);
-
-        if (userCheck == null) {
-            return null;
+    public void delete(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new EntityNotFoundException("User with id " + id + " not found.");
         }
 
-        userRepository.deleteById(id);
-
-        return userMapper.toUserDTO(userCheck);
+        userRepository.delete(optionalUser.get());
     }
 }

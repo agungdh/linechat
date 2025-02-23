@@ -57,4 +57,16 @@ public class UserService {
 
         return userMapper.toUserDTO(userEntity);
     }
+
+    public UserDTO delete(Long id) {
+        User userCheck = userRepository.findById(id).orElse(null);
+
+        if (userCheck == null) {
+            return null;
+        }
+
+        userRepository.deleteById(id);
+
+        return userMapper.toUserDTO(userCheck);
+    }
 }

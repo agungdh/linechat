@@ -17,7 +17,8 @@ public class LoggingAspect {
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     // Adjust the pointcut to target the layers you want to log.
-    @Around("within(@org.springframework.web.bind.annotation.RestController *)")
+//    @Around("within(@org.springframework.web.bind.annotation.RestController *)")
+    @Around("execution(* id.my.agungdh.linechat..*(..))")
     public Object logMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         // Generate a unique log ID for this execution thread
         String loggingId = UUID.randomUUID().toString();

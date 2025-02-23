@@ -22,13 +22,13 @@ public class LoggingAspect {
         // Log class name and method entry along with arguments
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
-        logger.info("Entering: {}.{}() with arguments = {}", className, methodName, Arrays.toString(joinPoint.getArgs()));
+        logger.debug("Entering: {}.{}() with arguments = {}", className, methodName, Arrays.toString(joinPoint.getArgs()));
 
         Object result = joinPoint.proceed();  // Proceed with the original method call
 
         long elapsedTime = System.currentTimeMillis() - startTime;
         // Log class name and method exit along with result and execution time
-        logger.info("Exiting: {}.{}() with result = {} | Execution time: {} ms", className, methodName, result, elapsedTime);
+        logger.debug("Exiting: {}.{}() with result = {} | Execution time: {} ms", className, methodName, result, elapsedTime);
 
         return result;
     }

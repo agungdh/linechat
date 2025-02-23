@@ -7,6 +7,7 @@ import id.my.agungdh.linechat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +36,9 @@ public class UserService {
         userRepository.save(userEntity);
 
         return userMapper.toUserDTO(userEntity);
+    }
+
+    public UserDTO findById(Long id) {
+        return userMapper.toUserDTO(userRepository.findById(id).orElse(null));
     }
 }

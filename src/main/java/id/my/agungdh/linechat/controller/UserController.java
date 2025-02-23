@@ -33,12 +33,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable("id") Long id) {
-        UserDTO userDTO = userService.findById(id);
-        if (userDTO == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @PutMapping("/{id}")
@@ -48,12 +43,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
 
-        UserDTO userDTO = userService.update(id, user);
-        if (userDTO == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(userService.update(id, user));
     }
 
     @DeleteMapping("/{id}")

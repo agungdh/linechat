@@ -40,19 +40,27 @@ public class UserService {
 
 
     public UserDTO findById(Long id) {
-        return userMapper.toUserDTO(userRepository.findById(id).orElse(null));
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new EntityNotFoundException("User with id " + id + " not found.");
+        }
+
+        User user = optionalUser.get();
+
+        return userMapper.toUserDTO(user);
     }
 
     public UserDTO update(Long id, UserDTO userRequest) {
-        User userCheck = userRepository.findById(id).orElse(null);
-
-        if (userCheck == null) {
-            return null;
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new EntityNotFoundException("User with id " + id + " not found.");
         }
+
+        User user = optionalUser.get();
 
         User userEntity = userMapper.toUser(userRequest);
 
-        userEntity.setId(userCheck.getId());
+        userEntity.setId(user.getId());
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
 
         userRepository.save(userEntity);

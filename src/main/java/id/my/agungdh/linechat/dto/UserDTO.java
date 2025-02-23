@@ -1,10 +1,12 @@
 package id.my.agungdh.linechat.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import id.my.agungdh.linechat.validation.PasswordMatches;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@PasswordMatches
 public record UserDTO(
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
@@ -13,6 +15,9 @@ public record UserDTO(
         @NotBlank
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
         String password,
+        @NotBlank
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "password_confirmation")
+        String confirmPassword,
         @NotBlank
         String name
 ) {

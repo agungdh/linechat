@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
                         FieldError::getField,
-                        FieldError::getDefaultMessage,
+                        fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "Invalid",
                         (existing, replacement) -> existing // In case of duplicate keys, keep the first error message
                 ));
         return ResponseEntity.badRequest().body(errors);

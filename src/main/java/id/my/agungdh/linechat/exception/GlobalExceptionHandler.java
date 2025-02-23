@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,12 +25,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "Invalid",
-                        (existing, replacement) -> existing // In case of duplicate keys, keep the first error message
-                ));
+        Map<String, String> errors = new HashMap<>();
+
+        // Process field errors
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(),
+                        error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid")
+        );
+
+        // Process global errors (for class-level constraints like PasswordMatches)
+        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+            String defaultMessage = error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid";
+            // Map the password match error to the "password" key
+            if ("Passwords do not match".equals(defaultMessage)) {
+                errors.put("password", defaultMessage);
+            } else {
+                // Otherwise, use a generic key or customize as needed.
+                errors.put("global", defaultMessage);
+            }
+        }
+
         return ResponseEntity.badRequest().body(errors);
     }
 }

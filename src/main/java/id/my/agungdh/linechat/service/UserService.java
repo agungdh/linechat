@@ -28,8 +28,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO create(UserDTO userRequest) {
-        User userEntity = userMapper.toUser(userRequest);
+    public UserDTO create(UserDTO userDTO) {
+        User userEntity = userMapper.toUser(userDTO);
 
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
 
@@ -50,7 +50,7 @@ public class UserService {
         return userMapper.toUserDTO(user);
     }
 
-    public UserDTO update(Long id, UserDTO userRequest) {
+    public UserDTO update(Long id, UserDTO userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User with id " + id + " not found.");
@@ -58,7 +58,7 @@ public class UserService {
 
         User user = optionalUser.get();
 
-        User userEntity = userMapper.toUser(userRequest);
+        User userEntity = userMapper.toUser(userDTO);
 
         userEntity.setId(user.getId());
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));

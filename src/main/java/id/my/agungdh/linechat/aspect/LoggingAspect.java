@@ -19,11 +19,19 @@ public class LoggingAspect {
     // Adjust the pointcut to target the layers you want to log.
     @Around("execution(* id.my.agungdh.linechat..*(..))")
     public Object logMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {
-        String loggingId = UUID.randomUUID().toString();
-        MDC.put("loggingId", loggingId);
+        // Check if a loggingId already exists in MDC.
+        boolean needToRemove = false;
+        String loggingId = MDC.get("loggingId");
+        if (loggingId == null) {
+            loggingId = UUID.randomUUID().toString();
+            MDC.put("loggingId", loggingId);
+            needToRemove = true;
+        }
 
-        // Construct the fully qualified method name
-        String fullMethodName = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
+        // Build the fully qualified method name.
+        String fullMethodName = joinPoint.getSignature().getDeclaringTypeName()
+                + "." + joinPoint.getSignature().getName();
+
         logger.debug("{} Entering: {} with arguments = {}", loggingId, fullMethodName, joinPoint.getArgs());
 
         long startTime = System.currentTimeMillis();
@@ -33,7 +41,10 @@ public class LoggingAspect {
             logger.debug("{} Exiting: {} with result = {} | Execution time: {} ms", loggingId, fullMethodName, result, executionTime);
             return result;
         } finally {
-            MDC.remove("loggingId");
+            // Only remove the loggingId if we were the one who set it.
+            if (needToRemove) {
+                MDC.remove("loggingId");
+            }
         }
     }
 }

@@ -1,23 +1,39 @@
 package id.my.agungdh.linechat.service;
 
+import id.my.agungdh.linechat.dto.LineWebhookDTO;
 import id.my.agungdh.linechat.entity.ChatMessage;
 import id.my.agungdh.linechat.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
-    public ChatMessage create() {
-        ChatMessage chatMessage = new ChatMessage();
+    public List<ChatMessage> handleWebhook(LineWebhookDTO lineWebhookDTO) {
+        if (lineWebhookDTO == null || lineWebhookDTO.events() == null) {
+            return List.of(); // Return empty list if no events
+        }
 
-        chatMessage.setSender("Surimbim");
-        chatMessage.setMessage("Raka nigga");
-        chatMessage.setTimestamp(System.currentTimeMillis());
+        // Convert incoming events to ChatMessage entities
+        List<ChatMessage> chatMessageList = lineWebhookDTO.events().stream()
+                .filter(event -> "message".equals(event.type()) && event.message() != null)
+                .map(event -> {
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setSender(event.source().userId());
+                    chatMessage.setMessage(event.message().text());
+                    chatMessage.setTimestamp(Instant.now().toEpochMilli());
 
+                    return chatMessage;
+                })
+                .collect(Collectors.toList());
 
-        return chatMessageRepository.save(chatMessage);
+        return chatMessageRepository.saveAll(chatMessageList); // Use saveAll() for batch insert
     }
 }

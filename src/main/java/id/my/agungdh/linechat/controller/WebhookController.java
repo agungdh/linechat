@@ -19,28 +19,30 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequestMapping("/webhook")
 public class WebhookController {
-    @Value("${id.my.agungdh.linechat.line.channel-secret}")
-    private String channelSecret;
-    private final LineSignatureValidator signatureValidator = new LineSignatureValidator(channelSecret);
+    private final LineSignatureValidator signatureValidator;
+
+    // Constructor-based Dependency Injection
+    public WebhookController(LineSignatureValidator signatureValidator) {
+        this.signatureValidator = signatureValidator;
+    }
 
     @PostMapping
-    public String handleWebhook(HttpServletRequest request, @RequestHeader("X-Line-Signature") String signature) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-        StringBuilder requestBody = new StringBuilder();
+    public ResponseEntity<String> handleWebhook(HttpServletRequest request, @RequestHeader("X-Line-Signature") String signature)
+            throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
+        StringBuilder requestBody = new StringBuilder();
         BufferedReader reader = request.getReader();
         String line;
         while ((line = reader.readLine()) != null) {
             requestBody.append(line);
         }
 
-        System.out.println(channelSecret);
-
         // Validate Signature
         if (!signatureValidator.validateSignature(requestBody.toString(), signature)) {
-            return "Invalid signature";
+            return ResponseEntity.status(401).body("Invalid signature");
         }
 
-        // Process the LINE webhook event here...
-        return "Webhook received successfully!";
+        // Process the LINE webhook event...
+        return ResponseEntity.ok("Webhook received successfully!");
     }
 }

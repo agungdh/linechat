@@ -1,7 +1,7 @@
 package id.my.agungdh.linechat.mapper;
 
 import id.my.agungdh.linechat.dto.UserDTO;
-import id.my.agungdh.linechat.model.User;
+import id.my.agungdh.linechat.entity.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

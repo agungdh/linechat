@@ -2,7 +2,7 @@ package id.my.agungdh.linechat.service;
 
 import id.my.agungdh.linechat.dto.UserDTO;
 import id.my.agungdh.linechat.mapper.UserMapper;
-import id.my.agungdh.linechat.model.User;
+import id.my.agungdh.linechat.entity.User;
 import id.my.agungdh.linechat.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

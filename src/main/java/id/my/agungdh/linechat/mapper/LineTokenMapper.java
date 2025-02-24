@@ -7,5 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface LineTokenMapper {
     LineTokenDTO toLineTokenDTO(LineToken lineToken);
+
     LineToken toLineToken(LineTokenDTO lineTokenDTO);
 }

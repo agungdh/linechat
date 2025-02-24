@@ -2,7 +2,6 @@ package id.my.agungdh.linechat.controller;
 
 import id.my.agungdh.linechat.dto.UserDTO;
 import id.my.agungdh.linechat.service.UserService;
-import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

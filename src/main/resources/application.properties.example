@@ -6,3 +6,5 @@ spring.jpa.hibernate.ddl-auto=create-drop
 spring.jpa.show-sql=true
 logging.level.id.my.agungdh.linechat=debug
 id.my.agungdh.linechat.line.channel-secret=
+spring.data.mongodb.uri=mongodb://admin:admin@localhost:27017/?authSource=admin
+spring.data.mongodb.database=chat

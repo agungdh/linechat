@@ -29,18 +29,6 @@ public class GlobalExceptionHandler {
                         error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid")
         );
 
-        // Process global errors (for class-level constraints like PasswordMatches)
-        for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
-            String defaultMessage = error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid";
-            // Map the password match error to the "password" key
-            if ("Passwords do not match".equals(defaultMessage)) {
-                errors.put("password", defaultMessage);
-            } else {
-                // Otherwise, use a generic key or customize as needed.
-                errors.put("global", defaultMessage);
-            }
-        }
-
         return ResponseEntity.badRequest().body(errors);
     }
 }

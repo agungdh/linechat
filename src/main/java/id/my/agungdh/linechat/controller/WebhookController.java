@@ -1,5 +1,6 @@
 package id.my.agungdh.linechat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.agungdh.linechat.dto.LineWebhookDTO;
 import id.my.agungdh.linechat.entity.ChatMessage;
 import id.my.agungdh.linechat.repository.ChatMessageRepository;
@@ -18,43 +19,42 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/webhook")
 public class WebhookController {
     private final LineSignatureValidator signatureValidator;
     private final ChatMessageService chatMessageService;
+    private final ObjectMapper objectMapper;
 
-    // Constructor-based Dependency Injection
-    public WebhookController(LineSignatureValidator signatureValidator, ChatMessageService chatMessageService) {
+    public WebhookController(LineSignatureValidator signatureValidator, ChatMessageService chatMessageService, ObjectMapper objectMapper) {
         this.signatureValidator = signatureValidator;
         this.chatMessageService = chatMessageService;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping
-    public ResponseEntity<String> handleWebhook(
-            HttpServletRequest request,
-            @RequestHeader("X-Line-Signature") String signature,
-            @RequestBody LineWebhookDTO lineWebhookDTO
-    )
+    public ResponseEntity<String> handleWebhook(HttpServletRequest request,
+                                                @RequestHeader("X-Line-Signature") String signature)
             throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
-        StringBuilder requestBody = new StringBuilder();
-        BufferedReader reader = request.getReader();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            requestBody.append(line);
-        }
+        // Read and cache request body (so it can be used twice)
+        String requestBody = new BufferedReader(request.getReader())
+                .lines()
+                .collect(Collectors.joining("\n"));
 
         // Validate Signature
-        if (!signatureValidator.validateSignature(requestBody.toString(), signature)) {
+        if (!signatureValidator.validateSignature(requestBody, signature)) {
             return ResponseEntity.status(401).body("Invalid signature");
         }
 
-        List<ChatMessage> chatMessageList = chatMessageService.handleWebhook(lineWebhookDTO);
-        System.out.println(chatMessageList);
+        // Convert request body to DTO manually
+        LineWebhookDTO lineWebhookDTO = objectMapper.readValue(requestBody, LineWebhookDTO.class);
 
-        // Process the LINE webhook event...
-        return ResponseEntity.ok("Webhook received successfully!");
+        // Process messages
+        chatMessageService.handleWebhook(lineWebhookDTO);
+
+        return ResponseEntity.ok("Webhook received and processed successfully!");
     }
 }

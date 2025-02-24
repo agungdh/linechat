@@ -4,18 +4,21 @@ import id.my.agungdh.linechat.dto.UserDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserDTO> {
-
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
     @Override
     public void initialize(PasswordMatches constraintAnnotation) {
-        // Initialization logic if needed
     }
 
     @Override
-    public boolean isValid(UserDTO dto, ConstraintValidatorContext context) {
-        if (dto.password() == null || dto.confirmPassword() == null) {
+    public boolean isValid(Object obj, ConstraintValidatorContext context) {
+        UserDTO user = (UserDTO) obj;
+        if (!user.password().equals(user.confirmPassword())) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Passwords do not match")
+                    .addPropertyNode("password") // Explicitly bind to "password" field
+                    .addConstraintViolation();
             return false;
         }
-        return dto.password().equals(dto.confirmPassword());
+        return true;
     }
 }

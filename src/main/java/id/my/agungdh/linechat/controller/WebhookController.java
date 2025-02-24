@@ -2,23 +2,19 @@ package id.my.agungdh.linechat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import id.my.agungdh.linechat.dto.LineWebhookDTO;
-import id.my.agungdh.linechat.entity.ChatMessage;
-import id.my.agungdh.linechat.repository.ChatMessageRepository;
 import id.my.agungdh.linechat.service.ChatMessageService;
 import id.my.agungdh.linechat.service.LineSignatureValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController

@@ -8,4 +8,5 @@ public record Source(
         String userId,
         String groupId,
         String roomId
-) {}
+) {
+}

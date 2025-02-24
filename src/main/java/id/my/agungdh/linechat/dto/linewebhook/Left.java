@@ -7,4 +7,5 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Left(
         List<Source> members
-) {}
+) {
+}

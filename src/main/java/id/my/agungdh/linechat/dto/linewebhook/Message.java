@@ -7,4 +7,5 @@ public record Message(
         String id,
         String type,
         String text
-) {}
+) {
+}

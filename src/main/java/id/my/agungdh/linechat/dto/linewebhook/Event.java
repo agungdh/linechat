@@ -15,4 +15,5 @@ public record Event(
         @JsonProperty("postback") Postback postback,
         @JsonProperty("joined") Joined joined,
         @JsonProperty("left") Left left
-) {}
+) {
+}

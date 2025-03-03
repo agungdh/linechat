@@ -1,6 +1,5 @@
 package id.my.agungdh.linechat.websocket;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -41,7 +40,7 @@ public class GlobalWebSocketHandler extends TextWebSocketHandler {
             session.close();
         }
 
-        if (session.isOpen())  {
+        if (session.isOpen()) {
             session.sendMessage(new TextMessage("Echo: " + clientMessage));
         }
     }

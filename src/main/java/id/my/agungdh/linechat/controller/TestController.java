@@ -1,6 +1,5 @@
 package id.my.agungdh.linechat.controller;
 
-import id.my.agungdh.linechat.dto.LineWebhookDTO;
 import id.my.agungdh.linechat.websocket.GlobalWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

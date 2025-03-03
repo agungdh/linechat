@@ -29,7 +29,7 @@ public class TestController {
         Map<String, WebSocketSession> sessions = webSocketHandler.getSessions();
 
         Map<String, String> sessionIds = new HashMap<>();
-        sessions.forEach((k, v) -> sessionIds.put(k, v.getAttributes().toString()));
+        sessions.forEach((k, v) -> sessionIds.put(k, (String) v.getAttributes().get("auth")));
 
         return ResponseEntity.ok(sessionIds);
     }

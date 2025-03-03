@@ -18,26 +18,37 @@ public class GlobalWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
-        String sessionId = session.getId();
-        session.getAttributes().put("username", "User-" + sessionId);
-
         sessions.put(session.getId(), session);
-        System.out.println("Client connected: " + session.getId());
-        session.sendMessage(new TextMessage("Hello! Your session ID: " + session.getId()));
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
         String clientMessage = message.getPayload();
-        System.out.println("Received: " + clientMessage);
+        boolean closeSession = true;
 
-        // Echo the message back to the client
-        session.sendMessage(new TextMessage("Echo: " + clientMessage));
+        if (clientMessage.startsWith("AUTH:")) {
+            String auth = clientMessage.substring(5).trim();
+            if (!auth.isEmpty()) {
+                session.getAttributes().put("auth", auth);
+            }
+        }
+
+        if (session.getAttributes().get("auth") != null) {
+            closeSession = false;
+        }
+
+        if (closeSession) {
+            session.close();
+        }
+
+        if (session.isOpen())  {
+            session.sendMessage(new TextMessage("Echo: " + clientMessage));
+        }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, @NonNull CloseStatus status) {
-        System.out.println("Client disconnected: " + session.getId() + " " + status);
+        sessions.remove(session.getId());
     }
 
     public void sendToSession(String sessionId, String message) throws IOException {

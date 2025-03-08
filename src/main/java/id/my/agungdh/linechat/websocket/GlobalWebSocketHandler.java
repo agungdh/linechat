@@ -8,8 +8,10 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class GlobalWebSocketHandler extends TextWebSocketHandler {
@@ -23,25 +25,19 @@ public class GlobalWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) throws IOException {
         String clientMessage = message.getPayload();
-        boolean closeSession = true;
 
-        if (clientMessage.startsWith("AUTH:")) {
-            String auth = clientMessage.substring(5).trim();
-            if (!auth.isEmpty()) {
-                session.getAttributes().put("auth", auth);
+        // check if it already authenticated
+        if (!session.getAttributes().containsKey("auth")) {
+            if (clientMessage.startsWith("AUTH:")) {
+                String auth = clientMessage.substring(5).trim();
+                if (!auth.isEmpty()) {
+                    session.getAttributes().put("auth", auth);
+                    if (session.isOpen()) {
+                        // do something
+                        session.sendMessage(new TextMessage("Authenticated"));
+                    }
+                }
             }
-        }
-
-        if (session.getAttributes().get("auth") != null) {
-            closeSession = false;
-        }
-
-        if (closeSession) {
-            session.close();
-        }
-
-        if (session.isOpen()) {
-            session.sendMessage(new TextMessage("Echo: " + clientMessage));
         }
     }
 
@@ -59,5 +55,11 @@ public class GlobalWebSocketHandler extends TextWebSocketHandler {
 
     public Map<String, WebSocketSession> getSessions() {
         return sessions;
+    }
+
+    public List<WebSocketSession> getSessionsByAttribute(String key, String value) {
+        return sessions.values().stream()
+                .filter(session -> value.equals(session.getAttributes().get(key)))
+                .collect(Collectors.toList());
     }
 }

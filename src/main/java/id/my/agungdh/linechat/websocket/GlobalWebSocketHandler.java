@@ -1,10 +1,8 @@
 package id.my.agungdh.linechat.websocket;
 
 import id.my.agungdh.linechat.entity.ChatMessage;
-import id.my.agungdh.linechat.repository.ChatMessageRepository;
 import id.my.agungdh.linechat.service.ChatMessageService;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -19,8 +17,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class GlobalWebSocketHandler extends TextWebSocketHandler {
-    private final ChatMessageService chatMessageService;
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final ChatMessageService chatMessageService;
 
     public GlobalWebSocketHandler(ChatMessageService chatMessageService) {
         this.chatMessageService = chatMessageService;

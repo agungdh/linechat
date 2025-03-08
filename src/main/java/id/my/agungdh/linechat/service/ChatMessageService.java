@@ -16,7 +16,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     public void handleWebhook(LineWebhookDTO lineWebhookDTO) {
-       // Convert incoming events to ChatMessage entities
+        // Convert incoming events to ChatMessage entities
         List<ChatMessage> chatMessageList = lineWebhookDTO.events().stream()
                 .filter(event -> "message".equals(event.type()) && event.message() != null)
                 .map(event -> {

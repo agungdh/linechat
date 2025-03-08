@@ -1,6 +1,10 @@
 package id.my.agungdh.linechat.websocket;
 
+import id.my.agungdh.linechat.entity.ChatMessage;
+import id.my.agungdh.linechat.repository.ChatMessageRepository;
+import id.my.agungdh.linechat.service.ChatMessageService;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,7 +19,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class GlobalWebSocketHandler extends TextWebSocketHandler {
+    private final ChatMessageService chatMessageService;
     private static final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+
+    public GlobalWebSocketHandler(ChatMessageService chatMessageService) {
+        this.chatMessageService = chatMessageService;
+    }
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
@@ -33,8 +42,13 @@ public class GlobalWebSocketHandler extends TextWebSocketHandler {
                 if (!auth.isEmpty()) {
                     session.getAttributes().put("auth", auth);
                     if (session.isOpen()) {
-                        // do something
-                        session.sendMessage(new TextMessage("Authenticated"));
+                        session.sendMessage(new TextMessage("AUTH:success"));
+
+                        List<ChatMessage> chatMessages = chatMessageService.getChatMessages();
+                        System.out.println(chatMessages);
+                        for (ChatMessage chatMessage : chatMessages) {
+                            session.sendMessage(new TextMessage(chatMessage.toString()));
+                        }
                     }
                 }
             }

@@ -15,12 +15,8 @@ import java.util.stream.Collectors;
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
-    public List<ChatMessage> handleWebhook(LineWebhookDTO lineWebhookDTO) {
-        if (lineWebhookDTO == null || lineWebhookDTO.events() == null) {
-            return List.of(); // Return empty list if no events
-        }
-
-        // Convert incoming events to ChatMessage entities
+    public void handleWebhook(LineWebhookDTO lineWebhookDTO) {
+       // Convert incoming events to ChatMessage entities
         List<ChatMessage> chatMessageList = lineWebhookDTO.events().stream()
                 .filter(event -> "message".equals(event.type()) && event.message() != null)
                 .map(event -> {
@@ -33,6 +29,10 @@ public class ChatMessageService {
                 })
                 .collect(Collectors.toList());
 
-        return chatMessageRepository.saveAll(chatMessageList); // Use saveAll() for batch insert
+        chatMessageRepository.saveAll(chatMessageList); // Use saveAll() for batch insert
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessageRepository.findAllByOrderByTimestampDesc();
     }
 }
